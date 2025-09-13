@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+config.py
+*.log
+main copy.py
+main copy 2.py
+vrnv/
