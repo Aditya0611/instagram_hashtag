@@ -1,151 +1,171 @@
-# Instagram Hashtag Analyzer
+# Instagram Trending Hashtag Analyzer
 
-A comprehensive Instagram hashtag analysis tool that extracts post metrics, engagement scores, sentiment analysis, and post content for specific hashtags.
+A comprehensive Instagram hashtag analysis tool that discovers trending hashtags, extracts detailed post metrics, performs sentiment analysis, and provides engagement ratings. This project includes multiple analyzers and testing utilities for robust hashtag research.
 
-## Features
+## 🚀 Key Features
 
-✅ **Post Count**: Get total number of posts for each hashtag  
-✅ **Engagement Metrics**: Extract likes and comments for engagement scoring  
-✅ **Post Links**: Collect direct URLs to analyzed posts  
-✅ **Sentiment Analysis**: Analyze post content sentiment using TextBlob  
-✅ **Post Content**: Extract captions and text content from posts  
-✅ **Database Storage**: Save all data to Supabase for persistence  
-✅ **Comprehensive Reporting**: Generate detailed analysis summaries  
+### Enhanced Analyzer ([enhanced_hashtag_analyzer.py](cci:7://file:///e:/instagram/enhanced_hashtag_analyzer.py:0:0-0:0))
+✅ **Dynamic Trending Discovery**: Automatically discovers trending hashtags for 8 base topics  
+✅ **Engagement Rating System**: 1-10 rating scale with emoji indicators (🔥📈📊📉💤)  
+✅ **Advanced Sentiment Analysis**: TextBlob-powered sentiment analysis with polarity scores  
+✅ **Topic-Based Analysis**: Analyzes 8 base topics (fashion, travel, food, fitness, art, technology, music, photography)  
+✅ **Comprehensive Post Metrics**: Likes, comments, engagement scores, and content extraction  
+✅ **Supabase Integration**: Automatic data storage with engagement ratings in `hashtag_ratings` table  
+✅ **Smart Rate Limiting**: Human-like behavior with randomized delays (3-15 seconds)  
 
-## What the Tool Extracts
+### Original Analyzer ([main.py](cci:7://file:///e:/instagram/main.py:0:0-0:0))
+✅ **Direct Hashtag Analysis**: Analyze 8 specific predefined hashtags (trending, viral, fashion, photography, travel, foodie, fitness, art)  
+✅ **Post Metrics Extraction**: Likes, comments, and engagement data  
+✅ **Sentiment Analysis**: TextBlob sentiment analysis with polarity/subjectivity scores  
+✅ **Database Storage**: Supabase integration with `hashtag_analysis` table  
+✅ **Posts Per Hashtag**: 5 posts each (40 total posts analyzed)
 
-For each hashtag, the analyzer provides:
+## 📁 Project Structure
+├── enhanced_hashtag_analyzer.py # 🔥 Main enhanced analyzer with trending discovery ├── main.py # 📊 Original hashtag analyzer (8 predefined hashtags) ├── run_enhanced_analyzer.py # 🧪 Quick test runner for enhanced analyzer ├── quick_test.py # ✅ TextBlob installation and setup checker ├── test_sentiment.py # 🎭 Sentiment analysis testing utility ├── requirements.txt # 📦 Python dependencies └── README.md # 📖 This documentation
 
-- **Total Post Count**: Number of posts using the hashtag
-- **Individual Post Data**:
-  - Post URL/Link
-  - Like count
-  - Comment count
-  - Engagement score (likes + comments)
-  - Post content/caption
-  - Sentiment analysis (positive/negative/neutral with polarity scores)
-- **Aggregate Metrics**:
-  - Total engagement across all analyzed posts
-  - Average engagement per post
-  - Overall sentiment distribution
-  - Top performing posts
 
-## Installation
+## 🛠️ Installation
 
-1. **Clone or download the files**
-2. **Install dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. **Install ChromeDriver**: Make sure you have Chrome browser and ChromeDriver installed
-4. **Download TextBlob corpora** (first time only):
-   ```python
-   import nltk
-   nltk.download('punkt')
-   nltk.download('brown')
-   ```
+### 1. Install Dependencies
+```bash
+pip install -r requirements.txt
+Dependencies included:
 
-## Configuration
+selenium==4.15.0 - Web automation
+textblob==0.17.1 - Sentiment analysis
+supabase==2.0.2 - Database integration
+webdriver-manager==4.0.1 - ChromeDriver management
+requests==2.31.0 - HTTP requests
+beautifulsoup4==4.12.2 - HTML parsing
+pandas==2.1.3 - Data analysis
+numpy==1.24.3 - Numerical computing
+2. Install ChromeDriver
+Download ChromeDriver from official site
+Add to PATH or place in project directory
+3. Setup TextBlob (First Time)
+bash
+python quick_test.py
+This will automatically install TextBlob and download required corpora.
 
-### 1. Instagram Credentials
-Update the credentials in `enhanced_hashtag_analyzer.py`:
-```python
+4. Test Sentiment Analysis
+bash
+python test_sentiment.py
+⚙️ Configuration
+Instagram Credentials
+Update credentials in both 
+enhanced_hashtag_analyzer.py
+ and 
+main.py
+:
+
+python
 USERNAME = "your_instagram_username"
 PASSWORD = "your_instagram_password"
-```
+Supabase Setup
+Update Supabase configuration:
 
-### 2. Target Hashtags
-Modify the `TARGET_HASHTAGS` list with hashtags you want to analyze:
-```python
-TARGET_HASHTAGS = [
-    'trending',
-    'viral',
-    'fashion',
-    'food',
-    'travel',
-    # Add your hashtags here
-]
-```
+python
+SUPABASE_URL = "your_supabase_url"
+SUPABASE_KEY = "your_supabase_key"
+Required Supabase Tables
+For Enhanced Analyzer - hashtag_ratings table:
 
-### 3. Supabase Setup (Optional)
-If you want to store data in Supabase:
-- Create a Supabase project
-- Create a table called `hashtag_analysis` with these columns:
-  - `id` (int8, primary key)
-  - `hashtag` (text)
-  - `post_count` (int8)
-  - `total_engagement` (int8)
-  - `engagement_rate` (float8)
-  - `sentiment_polarity` (float8)
-  - `sentiment_subjectivity` (float8)
-  - `overall_sentiment` (text)
-  - `posts_analyzed` (int8)
-  - `posts_data` (jsonb)
-  - `created_at` (timestamptz)
+sql
+CREATE TABLE hashtag_ratings (
+  id SERIAL PRIMARY KEY,
+  hashtag TEXT,
+  average_engagement_rating FLOAT,
+  overall_sentiment TEXT,
+  posts_data JSONB,
+  post_url TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+For Original Analyzer - hashtag_analysis table:
 
-## Usage
-
-### Basic Usage
-```bash
+sql
+CREATE TABLE hashtag_analysis (
+  id SERIAL PRIMARY KEY,
+  hashtag TEXT,
+  total_posts INTEGER,
+  total_engagement INTEGER,
+  average_engagement FLOAT,
+  overall_sentiment TEXT,
+  sentiment_polarity FLOAT,
+  sentiment_subjectivity FLOAT,
+  positive_posts_count INTEGER,
+  negative_posts_count INTEGER,
+  neutral_posts_count INTEGER,
+  top_post_url TEXT,
+  top_post_engagement INTEGER,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+🚀 Usage
+Enhanced Analyzer (Recommended)
+Full Analysis - Dynamic Trending Discovery
+bash
 python enhanced_hashtag_analyzer.py
-```
+Analyzes 8 base topics: fashion, travel, food, fitness, art, technology, music, photography
+Discovers 3 trending hashtags per topic (24 total hashtags)
+Analyzes 10 posts per hashtag (240 total posts)
+Provides engagement ratings and comprehensive metrics
+Saves to hashtag_ratings table
+Quick Test
+bash
+python run_enhanced_analyzer.py
+Tests 3 hashtags: #trending, #viral, #fashion
+Analyzes 5 posts per hashtag (15 total posts)
+Perfect for testing setup and functionality
+Original Analyzer
+bash
+python main.py
+Analyzes 8 predefined hashtags: trending, viral, fashion, photography, travel, foodie, fitness, art
+5 posts per hashtag analysis (40 total posts)
+Saves to hashtag_analysis table
+📊 What Each Tool Extracts
+Enhanced Analyzer Output
+📊 ANALYZING HASHTAG: #fashionista
+============================================================
+🔍 Fetching data from https://www.instagram.com/explore/tags/fashionista/...
+📈 Found 2,456,789 total posts for #fashionista
+🎯 Analyzing 10 posts for detailed metrics...
 
-### Customizing Analysis
-You can modify these parameters in the script:
-- `max_posts_per_hashtag`: Number of posts to analyze per hashtag (default: 15)
-- `TARGET_HASHTAGS`: List of hashtags to analyze
+  1. Processing: Post #1
+     ✓ Engagement: 3,245 (📈 High) - Likes: 2,890, Comments: 355
+     ✓ Engagement Rating: 8/10 📈
+     ✓ Sentiment: Positive (Polarity: 0.625)
+     ✓ Post Content: Amazing street style look with vintage accessories...
+     ✓ Instagram Link: https://instagram.com/p/ABC123/
 
-## Output
-
-The tool provides:
-
-### Console Output
-```
-📊 HASHTAG ANALYSIS SUMMARY
-================================================================================
-
-#TRENDING
-  📈 Total Posts: 1,234,567
-  💝 Total Engagement: 45,678
-  📊 Avg Engagement: 3,045
-  🎭 Overall Sentiment: Positive
-  📝 Posts Analyzed: 15
-  🔥 Top Post: 12,456 engagement
-     URL: https://instagram.com/p/ABC123/
-```
-
-### Supabase Data
-All data is automatically saved to your Supabase database including:
-- Hashtag metrics
-- Individual post data (JSON format)
-- Sentiment scores
-- Timestamps
-
-## Data Structure
-
-### Individual Post Data
-```json
+============================================================
+✅ HASHTAG #FASHIONISTA ANALYSIS COMPLETE!
+📊 Posts Analyzed: 10
+💝 Total Engagement: 28,456
+📈 Average Engagement: 2,845
+🎭 Overall Sentiment: Positive (Polarity: 0.234)
+📈 Sentiment Distribution: 😊7 😐2 😢1
+Data Structure
+Individual Post Data
+json
 {
   "url": "https://instagram.com/p/ABC123/",
-  "likes": 1250,
-  "comments": 89,
-  "engagement_score": 1339,
-  "content": "Amazing sunset today! #trending #photography",
+  "likes": 2890,
+  "comments": 355,
+  "engagement_score": 3245,
+  "engagement_rating": 8,
+  "content": "Amazing street style look with vintage accessories...",
   "sentiment": {
     "polarity": 0.625,
     "subjectivity": 0.6,
     "sentiment": "positive"
   }
 }
-```
-
-### Hashtag Summary
-```json
+Hashtag Summary
+json
 {
-  "hashtag": "trending",
-  "post_count": 1234567,
-  "total_engagement": 45678,
-  "engagement_rate": 3045.2,
+  "hashtag": "fashionista",
+  "post_count": 2456789,
+  "total_engagement": 28456,
+  "engagement_rate": 2845.6,
   "average_sentiment": {
     "polarity": 0.234,
     "subjectivity": 0.456,
@@ -153,57 +173,42 @@ All data is automatically saved to your Supabase database including:
   },
   "posts": [/* array of individual posts */]
 }
-```
+🎯 Engagement Rating System
+The enhanced analyzer includes a 1-10 engagement rating system:
 
-## Sentiment Analysis
+Rating	Engagement Score	Emoji	Description
+10	5000+	🔥	Viral content
+9	4000-4999	🔥	Extremely high
+8	3000-3999	📈	Very high
+7	2000-2999	📈	High
+6	1500-1999	📊	Above average
+5	1000-1499	📊	Average
+4	700-999	📊	Below average
+3	400-699	📉	Low
+2	200-399	📉	Very low
+1	<200	💤	Minimal
+🎭 Sentiment Analysis
+Uses TextBlob for comprehensive sentiment analysis:
 
-The tool uses TextBlob for sentiment analysis, providing:
-- **Polarity**: Range from -1 (negative) to 1 (positive)
-- **Subjectivity**: Range from 0 (objective) to 1 (subjective)
-- **Sentiment Label**: Categorized as positive, negative, or neutral
+Polarity: -1.0 (very negative) to +1.0 (very positive)
+Subjectivity: 0.0 (objective) to 1.0 (subjective)
+Categories: Positive (>0.1), Neutral (-0.1 to 0.1), Negative (<-0.1)
+Test Sentiment Analysis
+bash
+python test_sentiment.py
+Example output:
 
-## Rate Limiting & Best Practices
+🎭 TESTING SENTIMENT ANALYSIS
+==================================================
 
-The script includes built-in delays and human-like behavior:
-- Random pauses between requests (3-10 seconds)
-- Randomized user agent and browser settings
-- Graceful error handling
-- Automatic modal closing
+Test 1: I love this amazing product! It's absolutely fantastic! 😍
+   📊 Polarity: 0.625 (-1=very negative, +1=very positive)
+   📊 Subjectivity: 0.900 (0=objective, 1=subjective)
+   🎭 Sentiment: POSITIVE 😊
+🔍 Trending Discovery Algorithm
+The enhanced analyzer discovers trending hashtags by:
 
-## Troubleshooting
-
-### Common Issues
-1. **Login Failed**: Check your Instagram credentials
-2. **ChromeDriver Error**: Ensure ChromeDriver is installed and in PATH
-3. **Element Not Found**: Instagram may have changed their layout - selectors might need updating
-4. **Rate Limited**: Reduce the number of hashtags or increase delays
-
-### Tips
-- Use a test Instagram account
-- Don't analyze too many hashtags at once
-- Monitor console output for errors
-- Check Supabase logs if database insertion fails
-
-## Legal & Ethical Considerations
-
-- Respect Instagram's Terms of Service
-- Use responsibly and don't overload their servers
-- Consider the privacy of users whose posts you're analyzing
-- This tool is for educational and research purposes
-
-## Files Structure
-
-```
-├── enhanced_hashtag_analyzer.py    # Main analysis script
-├── main.py                        # Original scraper (backup)
-├── requirements.txt               # Python dependencies
-└── README.md                     # This file
-```
-
-## Support
-
-If you encounter issues:
-1. Check the console output for error messages
-2. Verify your Instagram credentials
-3. Ensure all dependencies are installed
-4. Check if Instagram has changed their page structure
+Base Topic Analysis: Starts with 8 core topics
+Related Hashtag Extraction: Scrapes related hashtags from topic pages
+Fallback Variations: Uses predefined variations if discovery fails
+Smart Filtering: Removes duplicates and irrelevant hashtags
