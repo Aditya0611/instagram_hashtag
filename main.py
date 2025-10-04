@@ -567,11 +567,13 @@ def main():
     
     with sync_playwright() as p:
         browser = p.chromium.launch(
-            headless=False,
+            headless=True,  # Changed to True for GitHub Actions
             args=[
                 '--disable-blink-features=AutomationControlled',
                 '--disable-dev-shm-usage',
-                '--no-sandbox'
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-gpu'
             ]
         )
         
